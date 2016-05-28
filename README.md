@@ -1,5 +1,5 @@
 # Image_Live_Stream
-This application allows live stream of images captured from camera (e.g. webcam) through network using UDP. It also includes MATLAB routines to allow receiving streamed images in MATLAB. This application *requries* OpenCV to be installed in the *default* system directories.
+This application allows live stream of images captured from camera (e.g. webcam) through network using UDP. It also includes MATLAB routines to allow receiving streamed images in MATLAB. This application **requries** OpenCV to be installed in the **default** system directories.
 
 # Install OpenCV
 
