@@ -19,6 +19,8 @@ To receive image stream in MATLAB, see next section.
 # MATLAB setup
 Once OpenCV header files and libraries are installed in the `/usr/local/include` and `/usr/local/lib` folders, you can setup the MATLAB files.
 
+NOTE: You need to make sure that you associate your MATLAB with a compiler. On Mac, you can use Xcode.
+
 Navigate to the `Image_Live_Stream` folder and run `setup.m` file. This will compile the neccessary `mex` files and add the folders to MATLAB path. This setup is a test setup, and assumes that the image sender application is sending to `localhost` which is `127.0.0.1` and local port `10000`. If you would like to change that, navigate to the `opencv_stream/stream_matlab` folder. Open the `receive_image.m` script, and change local port `lport`, `remotehost` and `remoteport` to the desired ones. Note that the c++ sender application uses port `12345`.
 
 Enjoy.
