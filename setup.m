@@ -1,4 +1,7 @@
 %% setup environment
+if ~ismac
+    error('Sorry, only supported on Mac OS for now')
+end
 cd matlab_udp_class
 setup_udp_toolbox
 cd ../opencv_stream

@@ -1,4 +1,9 @@
 lport=10000; % local port
+
+% remote port and IP
+remotehost='127.0.0.1';
+remoteport=12345;
+
 udpo=pnet('udpsocket',lport);
 sec=0.1;
 pnet(udpo,'setreadtimeout',sec)
@@ -8,9 +13,6 @@ nPackets=0;
 wrong_packets=false;
 PACK_SIZE=4096;
 
-% remote port and IP
-host='127.0.0.1';
-port=12345;
 t0=tic;
 try
     while(1)
@@ -26,7 +28,7 @@ try
 
             % acknowledge that we got the total number of image packets
             pnet(udpo,'write',typecast(int32(nPackets),'uint8'));              % Write to write buffer
-            pnet(udpo,'writepacket',host,port);   % Send buffer as UDP packet
+            pnet(udpo,'writepacket',remotehost,remoteport);   % Send buffer as UDP packet
 
             t1=tic;
             counter=0;
@@ -55,7 +57,7 @@ try
 
                 % acknowledge that we got one image packet
                 pnet(udpo,'write',typecast(int32(999),'uint8'));% Write to write buffer
-                pnet(udpo,'writepacket',host,port);   % Send buffer as UDP packet
+                pnet(udpo,'writepacket',remotehost,remoteport);   % Send buffer as UDP packet
 
             end
 
