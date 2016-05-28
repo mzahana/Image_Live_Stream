@@ -1,0 +1,13 @@
+%% setup tcp_udp_ip toolbox
+
+if ispc
+    cd tcp_udp_ip
+    mex -O pnet.c ws2_32.lib -DWIN32
+    cd ..
+end
+
+if ismac
+    cd tcp_udp_ip
+    mex -O pnet.c
+    cd ..
+end

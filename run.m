@@ -1,0 +1,2 @@
+%% run
+receive_image

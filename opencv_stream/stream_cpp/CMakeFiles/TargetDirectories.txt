@@ -1,0 +1,2 @@
+/Users/abdkadma/Dropbox/ImgStreamUDP/Image_Live_Stream/opencv_stream/stream_cpp/CMakeFiles/sender.dir
+/Users/abdkadma/Dropbox/ImgStreamUDP/Image_Live_Stream/opencv_stream/stream_cpp/CMakeFiles/receiver.dir

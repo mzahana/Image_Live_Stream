@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 2.8)
+project( lan_vid_pseudostream )
+find_package( OpenCV REQUIRED )
+add_executable( receiver receiver.cpp PracticalSocket.cpp )
+target_link_libraries( receiver ${OpenCV_LIBS} )
+add_executable( sender sender.cpp PracticalSocket.cpp )
+target_link_libraries( sender ${OpenCV_LIBS} )
