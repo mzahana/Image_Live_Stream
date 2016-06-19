@@ -185,7 +185,7 @@ methods (Access=private)
                             if obj.firstTimeimgHandle<2
                                 image(obj.img);
                                 obj.imageHandle = get(gca,'Children');
-                                obj.imageHandle.CDataMapping='scaled';
+                                %obj.imageHandle.CDataMapping='scaled';
                                 %drawnow;
                                 obj.firstTimeimgHandle=obj.firstTimeimgHandle+1;
                             else

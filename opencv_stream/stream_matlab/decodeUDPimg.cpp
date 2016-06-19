@@ -65,7 +65,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     Mat rawData = Mat(1, buffLen, CV_8UC1, InputBuffer);
     //Mat frame;
     //Mat frame = imdecode(rawData, 0);
-    Mat frame = imdecode(rawData, 0);
+    Mat frame = imdecode(rawData, CV_LOAD_IMAGE_COLOR);
     //cout << "channels " << frame.channels();
     //imdecode(Mat(1, buffLen, CV_8U, 90InputBuffer), IMREAD_COLOR, &frame);
     
