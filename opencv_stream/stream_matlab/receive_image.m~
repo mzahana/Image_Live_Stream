@@ -4,7 +4,7 @@ close all
 lport=10000; % local port
 
 % remote port and IP
-remotehost='127.0.0.1';
+remotehost='192.168.1.100';
 remoteport=12345;
 
 udpo=pnet('udpsocket',lport,'noblock');

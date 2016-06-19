@@ -1,0 +1,209 @@
+classdef ImgStream < handle
+%% private properties
+properties (Access=private)
+    listenTimer;
+end
+%%    
+properties(SetAccess=protected)
+    LocalPort=10000;
+    remoteHost='127.0.0.1';
+    remotePort=12345;
+    
+    IsConnected=0;
+end
+%% constants
+properties(Constant)
+    udpDelay=1e-10;
+    PACK_SIZE=4096;
+end
+%% private properties
+properties(Access=private)
+    udpHandle;
+    
+    t0=0;
+    t1=0;
+    firstTimeimgHandle=1;
+    
+    nPackets=0;
+    packetCounter=0;
+    timeout=2; % seconds
+end
+%% public methods
+methods
+    
+    % constructor
+    function obj = ImgStream()
+        
+        obj.listenTimer=timer;
+        obj.listenTimer.Period=10;
+        obj.listenTimer.ExecutionMode='fixedSpacing';
+        obj.listenTimer.TimerFcn={@(tmrobj,event)ListenCalback(obj,tmrobj,event)};
+    end
+    function set_LocalPort(obj,value)
+        if ~isnumeric(value)
+            error('Value must be numeric.');
+        end
+        if value <1
+            error('Value must be positive.');
+        end
+        
+        obj.LocalPort=value; 
+    end
+    
+    function set_remoteHost(obj,value)
+        if ~ischar(value)
+            error('Value must be string.');
+        end
+        obj.remoteHost=value;
+    end
+    
+    function Connect(obj)
+        if obj.IsConnected
+            disp('Already connected')
+        else
+            try
+            obj.udpHandle=pnet('udpsocket',obj.LocalPort,'noblock');
+            pnet(obj.udpHandle,'setreadtimeout',obj.udpDelay);
+            pnet(obj.udpHandle,'setwritetimeout',obj.udpDelay);
+            catch
+                error('Conneciton error. Make sure pnet UDP class is included and/or local port is available.');
+            end
+            
+            obj.t0=tic;
+        end
+    end
+    
+    function Disconnect(obj)
+        stop(obj.listenTimer);
+        % close UDP
+        try
+            stat=pnet(obj.udpHandle,'status');
+            if stat>0
+                pnet(obj.udpHandle,'close')
+                obj.udpHandle=[];
+                disp(['local UDP Port: ', num2str(obj.LocalPort), ' is closed!'])
+
+            end
+        catch
+                %warning('UDP socket is already closed.')
+        end
+        pnet('closeall')
+        
+        obj.reset();
+    end
+    
+    function reset(obj)
+        obj.firstTimeimgHandle=1;
+        obj.nPackets=0;
+        obj.t0=0; obj.t1=0;
+        obj.packetCounter=0;
+    end
+    
+    function delete(obj)
+        stop(obj.listenTimer)
+        
+        if isvalid(obj.listenTimer)
+            stop(obj.listenTimer);
+            delete(obj.listenTimer);
+        end
+        % close UDP
+        try
+            stat=pnet(obj.udpHandle,'status');
+            if stat>0
+                pnet(obj.udpHandle,'close')
+                obj.udpHandle=[];
+                disp(['local UDP Port: ', num2str(obj.LocalPort), ' is closed!'])
+
+            end
+        catch
+                %warning('UDP socket is already closed.')
+        end
+        pnet('closeall')
+        
+        disp('Object deleted.');
+        
+    end
+end
+%% private method
+methods (Access=private)
+    
+    function ListenCalback(obj,tmrobj,~)
+        
+            while(1)
+                len=pnet(obj.udpHandle,'readpacket','noblock');
+                data=pnet(obj.udpHandle,'read',5000,'uint8');
+                % state 1: receive number of image packets
+                if (len ==12)
+                    obj.t0=tic;
+
+                    ID=typecast(data,'int32');
+                    %disp('got number of packets')
+                    obj.nPackets=ID(3);
+
+                    % acknowledge that we got the total number of image packets
+                    pnet(udpo,'write',typecast(int32(obj.nPackets),'uint8'));              % Write to write buffer
+                    pnet(udpo,'writepacket',obj.remoteHost,obj.remotePort,'noblock');   % Send buffer as UDP packet
+
+                    obj.t1=tic;
+                    obj.packetCounter=0;
+                    longbuff=uint8(zeros(1,obj.PACK_SIZE*obj.nPackets));
+                    while (obj.packetCounter < obj.nPackets)
+                        % we took long time
+                        if (toc(obj.t1)>obj.timeout)
+                            disp('took long time')
+                            obj.Disconnect();
+                            break;
+                        end
+                        % read one image packet
+
+                        len=pnet(obj.udpHandle,'readpacket','noblock');
+                        data=pnet(obj.udpHandle,'read',5000,'uint8');
+
+                        if len == obj.PACK_SIZE
+                            longbuff((obj.packetCounter*obj.PACK_SIZE+1):(counter*PACK_SIZE+PACK_SIZE))=data;
+                            counter=counter+1;
+
+                            % acknowledge that we got one image packet
+                            pnet(udpo,'write',typecast(int32(999),'uint8'));% Write to write buffer
+                            pnet(udpo,'writepacket',remotehost,remoteport);   % Send buffer as UDP packet
+                        end
+
+                    end
+
+                    if (nPackets==counter)
+                        [img]=decodeUDPimg(longbuff,counter*PACK_SIZE);
+                        if cc<2
+                            im=image(img);
+                            %im.AlphaDataMapping='direct';
+                            imageHandle = get(gca,'Children');
+                            imageHandle.CDataMapping='scaled';
+                            %drawnow;
+                            cc=cc+1;
+                        else
+                            tic
+                            set(imageHandle ,'CData',img);
+                            %drawnow;
+                            %imshow(img)
+                            toc
+                        end
+                        %disp('got complete image...')
+                        wrong_packets=true;
+                    end
+                else
+                    if toc(t0)>2
+                        % we took long time to receive packets
+                        break;
+                    end
+                end
+                %pause(0.01)
+            end
+            clc
+            disp('Timeout. Received no image.')
+            pnet(udpo,'close');
+            pnet('closeall')
+            disp('closing and clearing..')
+            clear
+            close all
+            end
+end
+end
