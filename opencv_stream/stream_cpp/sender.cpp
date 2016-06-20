@@ -62,21 +62,25 @@ int main(int argc, char * argv[]) {
         }
 
         clock_t last_cycle = clock();
+        vector < int > compression_params;
+        int total_pack;
+        int ibuf[3];
+        clock_t next_cycle;
         while (1) {
             cap >> frame;
             if(frame.size().width==0)continue;//simple integrity check; skip erroneous data...
             resize(frame, send, Size(FRAME_WIDTH, FRAME_HEIGHT), 0, 0, INTER_LINEAR);
-            vector < int > compression_params;
+            
             compression_params.push_back(CV_IMWRITE_JPEG_QUALITY);
             compression_params.push_back(jpegqual);
 
             imencode(".jpg", send, encoded, compression_params);
             //imshow("send", send);
-            int total_pack = 1 + (encoded.size() - 1) / PACK_SIZE;
+            total_pack = 1 + (encoded.size() - 1) / PACK_SIZE;
             
             
             // send state 1 (=99) + total number of packets to receiver
-            int ibuf[3];
+            
             ibuf[0]=9; ibuf[1]=9; ibuf[2] = total_pack;
             sock.sendTo(ibuf, sizeof(int)*3, servAddress, servPort);
             
@@ -121,7 +125,7 @@ int main(int argc, char * argv[]) {
             {
                 waitKey(FRAME_INTERVAL);
 
-                clock_t next_cycle = clock();
+                next_cycle = clock();
                 double duration = (next_cycle - last_cycle) / (double) CLOCKS_PER_SEC;
                 cout << endl << "\teffective FPS:" << (1 / duration) << " \tkbps:" << (PACK_SIZE * total_pack / duration / 1024 * 8) << endl;
 
