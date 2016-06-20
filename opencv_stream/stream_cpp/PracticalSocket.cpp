@@ -219,8 +219,8 @@ int CommunicatingSocket::recv(void *buffer, int bufferLen)
         */
         // setting a timeout for the udp read
         struct timeval t;
-        t.tv_sec = 1;
-        t.tv_usec = 0;// 0.5 second
+        t.tv_sec = 0;
+        t.tv_usec = 1000;// 0.5 second
         // reference:
         //http://stackoverflow.com/questions/22120380/udp-receive-timeout-option-linux-c
         if(setsockopt(sockDesc, SOL_SOCKET, SO_RCVTIMEO, &t, sizeof(t)) == -1){
