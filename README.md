@@ -26,6 +26,13 @@ Enjoy.
 # Setup on Windows
 **To be done!**
 
+## MATLAB setup
+* Make sure that you install OpenCV 2.4.13
+  Follow this video https://www.youtube.com/watch?v=tHX3MLzwF6Q
+* Make sure that your MATLAB is associated with compiler
+* In MATLAB, run the `setup.m` file.
+If all goes well, you are ready to receive image stream. Look at the test script to get familiar on how to use the ImgStream Class.
+
 # OpenCV setup on Odroid
 **To be done!**
 
