@@ -78,6 +78,9 @@ int main(int argc, char * argv[]) {
     clock_t start_t;
     clock_t end_t;
     bool ack=false;
+    
+    // signal handler
+    signal(SIGINT,quit_handler);
 
     try {
         UDPSocket sock(12345);
