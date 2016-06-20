@@ -34,5 +34,9 @@ Enjoy.
 If all goes well, you are ready to receive image stream. Look at the test script to get familiar on how to use the ImgStream Class.
 
 # OpenCV setup on Odroid
-**To be done!**
+To install OpenCV on ODROID, run the following commands in a terminal.
+```sh
+$ sudo apt-get -y install libopencv-dev
+$ sudo apt-get -y install build-essential cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
+```
 
