@@ -15,7 +15,7 @@ properties(SetAccess=protected)
 end
 %% constants
 properties(Constant, Access=private)
-    udpDelay=1e-10;
+    udpDelay=1e-7;
     PACK_SIZE=4096;
 end
 %% private properties
@@ -139,6 +139,7 @@ end
 methods (Access=private)
     
     function ListenCalback(obj,~,~)
+        try
                 len=pnet(obj.udpHandle,'readpacket','noblock');
                 data=pnet(obj.udpHandle,'read',5000,'uint8');
                 % state 1: receive number of image packets
@@ -202,6 +203,9 @@ methods (Access=private)
                         obj.Disconnect();
                     end
                 end% end of receiving and decoding one image
-            end
+        catch
+        end
+        end
+     
 end
 end

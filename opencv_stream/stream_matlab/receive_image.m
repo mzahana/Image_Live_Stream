@@ -4,12 +4,12 @@ close all
 lport=10000; % local port
 
 % remote port and IP
-remotehost='127.0.0.1';
+remotehost='192.168.1.113';
 remoteport=12345;
 
 udpo=pnet('udpsocket',lport,'noblock');
 %sec=0.0000001;
-sec=1e-10;
+sec=1e-5;
 pnet(udpo,'setreadtimeout',sec)
 pnet(udpo,'setwritetimeout',sec)
 %%

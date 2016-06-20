@@ -23,13 +23,44 @@
 #include <cstdlib>                // For atoi()
 
 #define BUF_LEN 65540
-#define LCLPORT=12345
+#define LCLPORT 12345
 
 using namespace std;
 
 #include "opencv2/opencv.hpp"
 using namespace cv;
 #include "config.h"
+
+
+//------------------- global variables-----------------
+VideoCapture cap(0); // Grab the camera
+
+////////////////////////////////
+// HELPER FUNCTIONS
+////////////////////////////////
+// ------------------------------------------------------------------------------
+//   Quit Signal Handler: to quit cleanly, and close files before exit (CTRL+C)
+// ------------------------------------------------------------------------------
+// this function is called when you press Ctrl-C
+void
+quit_handler( int sig )
+{
+    printf("\n");
+    printf("TERMINATING AT USER REQUEST\n");
+    printf("\n");
+    
+    // autopilot interface
+    try {
+        cap.release();
+
+    }
+    catch (int error){}
+    
+    // end program here
+    exit(0);
+    
+}
+
 
 
 int main(int argc, char * argv[]) {
@@ -54,7 +85,7 @@ int main(int argc, char * argv[]) {
 
         Mat frame, send;
         vector < uchar > encoded;
-        VideoCapture cap(0); // Grab the camera
+        //VideoCapture cap(0); // Grab the camera
         //namedWindow("send", CV_WINDOW_AUTOSIZE);
         if (!cap.isOpened()) {
             cerr << "OpenCV Failed to open camera";
